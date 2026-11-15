@@ -1,0 +1,298 @@
+/* Takeover: essay styles.
+   Two colours carry the argument: mineral (the first system) and carbon
+   (the second). The signal colour is used once, when the circle closes. */
+
+@font-face {
+  font-family: "STIX Two Text";
+  src: url("../fonts/stix-two-text-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "STIX Two Text";
+  src: url("../fonts/stix-two-text-latin-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+:root {
+  color-scheme: light;
+  --paper: #f6f7f4;
+  --carbon: #17212a;
+  --mineral: #cad5d6;
+  --mineral-line: #6f858c;
+  --signal: #f0b429;
+  --quiet: #55626a;
+  --serif: "STIX Two Text", "STIXGeneral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --measure: 34rem;
+  --plate: 36rem;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--carbon);
+  font-family: var(--serif);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  font-variant-numeric: oldstyle-nums;
+}
+
+.page {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 5vw, 3.5rem) clamp(1.25rem, 5vw, 2.5rem) 5rem;
+}
+
+.draft-note {
+  margin: 0 0 clamp(2.5rem, 9vw, 5rem);
+  font-size: 0.875rem;
+  color: var(--quiet);
+}
+
+h1 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2.5rem, 9vw, 4.25rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+}
+
+.claim {
+  max-width: var(--measure);
+  margin: 0 0 2.5rem;
+  font-size: 1.375rem;
+  line-height: 1.4;
+}
+
+.prose { max-width: var(--measure); }
+.prose p { margin: 0 0 1.1em; }
+.prose q { quotes: "\201C" "\201D"; }
+
+.sources {
+  max-width: var(--measure);
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mineral);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--quiet);
+}
+.sources p { margin: 0 0 0.5em; }
+
+/* ---------- The figure ---------- */
+
+.plate {
+  max-width: var(--plate);
+  margin: 0 0 3rem;
+}
+
+.plate__stage { margin: 0 -0.5rem; }
+.plate__stage p { margin: 0; padding: 2rem 0.5rem; color: var(--quiet); }
+
+.meter {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.meter__cells {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  height: 0.75rem;
+}
+.meter__cell {
+  background: var(--mineral);
+  transition: background-color 0.5s ease 0.4s;
+}
+.meter__cell[data-on="true"] { background: var(--carbon); }
+
+.plate__caption {
+  min-height: 4.9em;
+  margin: 1rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+.plate__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+}
+
+.plate__controls button {
+  min-height: 2.75rem;
+  padding: 0.4rem 1.1rem;
+  border: 1.5px solid var(--carbon);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--carbon);
+  font: inherit;
+  font-size: 1rem;
+  font-variant-numeric: lining-nums;
+  cursor: pointer;
+}
+.plate__controls button[data-cc-play] {
+  min-width: 7.5rem;
+  background: var(--carbon);
+  color: var(--paper);
+}
+.plate__controls button:disabled {
+  border-color: var(--mineral-line);
+  color: var(--mineral-line);
+  cursor: default;
+}
+.plate__controls button:focus-visible {
+  outline: 2px solid var(--carbon);
+  outline-offset: 3px;
+}
+
+.plate__key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  color: var(--quiet);
+}
+.plate__key li { display: flex; align-items: center; gap: 0.5rem; }
+.plate__key svg { flex: none; width: 1.75rem; height: 1rem; }
+
+/* ---------- Closing circle (SVG) ---------- */
+
+.cc { display: block; width: 100%; height: auto; }
+
+.cc-stone {
+  fill: var(--mineral);
+  stroke: var(--mineral-line);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  transition: stroke 0.4s ease 0.5s;
+}
+.cc-layers path {
+  fill: none;
+  stroke: var(--mineral-line);
+  stroke-width: 1;
+  opacity: 0.75;
+  transition: opacity 0.5s ease 0.6s;
+}
+.cc-core {
+  fill: var(--carbon);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.05);
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.2, 1), opacity 0.25s ease;
+}
+.cc-letter {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 27px;
+  fill: var(--carbon);
+  text-anchor: middle;
+  dominant-baseline: central;
+  transition: fill 0.3s ease 0.15s;
+}
+
+.cc-step[data-status="overlap"] .cc-core { transform: scale(0.52); opacity: 1; }
+.cc-step[data-status="second"] .cc-core { transform: scale(1); opacity: 1; }
+.cc-step[data-status="second"] .cc-layers path { opacity: 0; }
+.cc-step[data-status="second"] .cc-stone { stroke: var(--carbon); }
+.cc-step[data-status="overlap"] .cc-letter,
+.cc-step[data-status="second"] .cc-letter { fill: var(--paper); }
+
+/* Supports: the first system holding each step up. */
+.cc-support,
+.cc-beam {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 1.2s cubic-bezier(0.55, 0, 0.85, 0.35) var(--delay, 0s),
+              opacity 1s ease-in var(--delay, 0s);
+}
+.cc-support line,
+.cc-beam {
+  fill: none;
+  stroke: var(--mineral-line);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.cc-support line { transition: opacity 0.5s ease 0.7s; }
+.cc-support[data-slack="true"] line { stroke-dasharray: 1.5 6.5; opacity: 0.6; }
+
+.cc[data-dropped="true"] .cc-support,
+.cc[data-dropped="true"] .cc-beam {
+  transform: translate(var(--dx, 0px), 200px) rotate(var(--rot, 10deg));
+  opacity: 0;
+}
+
+/* The loop itself. */
+.cc-track {
+  fill: none;
+  stroke: var(--mineral-line);
+  stroke-width: 1.5;
+  stroke-dasharray: 0.5 7;
+  stroke-linecap: round;
+  transition: stroke 0.6s ease;
+}
+.cc-arrow {
+  fill: none;
+  stroke: var(--mineral-line);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.6s ease;
+}
+.cc[data-closed="true"] .cc-track {
+  stroke: var(--carbon);
+  stroke-dasharray: none;
+  stroke-width: 2;
+}
+.cc[data-closed="true"] .cc-arrow { stroke: var(--carbon); }
+
+.cc-runner {
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 320px 320px;
+}
+.cc-runner circle { fill: var(--signal); stroke: var(--carbon); stroke-width: 1.5; }
+.cc[data-closed="true"] .cc-runner {
+  opacity: 1;
+  animation: cc-lap 2.6s cubic-bezier(0.45, 0, 0.2, 1) 0.6s 2 both;
+}
+@keyframes cc-lap { to { transform: rotate(360deg); } }
+
+.cc-count {
+  font-family: var(--serif);
+  font-size: 58px;
+  font-variant-numeric: lining-nums;
+  fill: var(--carbon);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Once the supports are down, the runner rests at the top of the loop. */
+.cc[data-dropped="true"] .cc-runner { animation: none; }
+
+/* Jump between states without animating (start over, deep links). */
+.is-snapping .cc *,
+.is-snapping .meter__cell { transition: none !important; animation: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cc *, .meter__cell { transition: none !important; }
+  .cc[data-closed="true"] .cc-runner { animation: none; }
+  .cc[data-dropped="true"] .cc-support,
+  .cc[data-dropped="true"] .cc-beam { transform: none; }
+}
