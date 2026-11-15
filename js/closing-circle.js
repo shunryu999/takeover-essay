@@ -10,12 +10,11 @@
  *
  *   new ClosingCircle(figureElement, config)
  *
- * Inside the figure, the component looks for:
- *   [data-cc-stage]     where the drawing goes (required)
- *   [data-cc-caption]   caption for the current state
+ * Needs figure-player.js loaded first. Inside the figure it looks for:
+ *   [data-fig-stage]    where the drawing goes (required)
  *   [data-cc-meter]     closure meter
  *   [data-cc-readout]   text readout, e.g. "3 of 8"
- *   [data-cc-play] [data-cc-next] [data-cc-reset]   buttons
+ * plus the caption and buttons that FigurePlayer handles.
  *
  * Config:
  *   steps     array of short labels, one per step, clockwise from the top
@@ -112,28 +111,29 @@
 
   function ClosingCircle(root, config) {
     checkConfig(config);
+    if (!global.FigurePlayer) throw new Error('ClosingCircle: load figure-player.js first.');
     this.root = root;
     this.config = config;
     this.n = config.steps.length;
     this.states = buildStates(config);
-    this.index = 0;
-    this.playing = false;
-    this.timer = null;
 
-    this.stage = root.querySelector('[data-cc-stage]');
-    this.captionEl = root.querySelector('[data-cc-caption]');
+    this.stage = root.querySelector('[data-fig-stage]');
     this.meterEl = root.querySelector('[data-cc-meter]');
     this.readoutEl = root.querySelector('[data-cc-readout]');
-    this.playBtn = root.querySelector('[data-cc-play]');
-    this.nextBtn = root.querySelector('[data-cc-next]');
-    this.resetBtn = root.querySelector('[data-cc-reset]');
-    if (!this.stage) throw new Error('ClosingCircle: the figure needs a [data-cc-stage] element.');
+    if (!this.stage) throw new Error('ClosingCircle: the figure needs a [data-fig-stage] element.');
 
     this.draw();
-    this.bind();
 
-    var match = /step=(\d+)/.exec(global.location ? global.location.hash : '');
-    this.go(match ? parseInt(match[1], 10) : 0, { snap: true, silent: true });
+    var states = this.states;
+    this.player = new global.FigurePlayer(root, {
+      count: states.length,
+      render: this.render.bind(this),
+      caption: function (i) { return states[i].caption; },
+      hold: function (i) { return states[i].hold; },
+      pace: config.pace,
+      hash: config.hash
+    });
+    this.player.start();
   }
 
   ClosingCircle.prototype.draw = function () {
@@ -233,31 +233,11 @@
     return '--dx:' + dx + 'px;--rot:' + rot + 'deg;--delay:' + delay.toFixed(2) + 's';
   }
 
-  ClosingCircle.prototype.bind = function () {
+  // Show one state. FigurePlayer calls this; it handles timing and controls.
+  ClosingCircle.prototype.render = function (index) {
     var self = this;
-    if (this.playBtn) this.playBtn.addEventListener('click', function () {
-      if (self.playing) self.pause(); else self.play();
-    });
-    if (this.nextBtn) this.nextBtn.addEventListener('click', function () {
-      self.pause();
-      self.go(self.index + 1);
-    });
-    if (this.resetBtn) this.resetBtn.addEventListener('click', function () {
-      self.pause();
-      self.go(0, { snap: true });
-    });
-  };
-
-  ClosingCircle.prototype.go = function (index, opts) {
-    opts = opts || {};
-    var self = this;
-    var last = this.states.length - 1;
-    index = Math.max(0, Math.min(last, index));
     var state = this.states[index];
     var done = state.taken.length;
-    this.index = index;
-
-    if (opts.snap) this.root.classList.add('is-snapping');
 
     this.stepEls.forEach(function (step, i) {
       var status = state.taken.indexOf(i) !== -1 ? 'second' : (state.overlap === i ? 'overlap' : 'first');
@@ -277,67 +257,8 @@
         cell.setAttribute('data-on', i < done ? 'true' : 'false');
       });
     }
-    if (this.captionEl) this.captionEl.textContent = state.caption || '';
     this.titleEl.textContent = (this.config.label ? this.config.label + ' ' : '') +
       readout + ' steps have changed hands. ' + (state.caption || '');
-
-    this.syncButtons();
-
-    if (!opts.silent && this.config.hash !== false && global.history && global.history.replaceState) {
-      // Some embedded previews refuse address-bar changes. The figure works without them.
-      try { global.history.replaceState(null, '', '#step=' + index); } catch (e) { /* ignore */ }
-    }
-
-    if (opts.snap) {
-      void this.svg.getBoundingClientRect();
-      global.requestAnimationFrame(function () {
-        global.requestAnimationFrame(function () {
-          self.root.classList.remove('is-snapping');
-        });
-      });
-    }
-  };
-
-  ClosingCircle.prototype.syncButtons = function () {
-    var last = this.states.length - 1;
-    if (this.playBtn) {
-      this.playBtn.textContent = this.playing ? 'Pause' : (this.index >= last ? 'Play again' : 'Play');
-    }
-    if (this.nextBtn) this.nextBtn.disabled = this.index >= last;
-    if (this.resetBtn) this.resetBtn.disabled = this.index === 0;
-  };
-
-  ClosingCircle.prototype.play = function () {
-    var last = this.states.length - 1;
-    var wait = 0;
-    if (this.index >= last) {
-      this.go(0, { snap: true });
-      wait = 600;
-    }
-    this.playing = true;
-    this.syncButtons();
-    this.tick(wait);
-  };
-
-  ClosingCircle.prototype.pause = function () {
-    this.playing = false;
-    global.clearTimeout(this.timer);
-    this.syncButtons();
-  };
-
-  ClosingCircle.prototype.tick = function (delay) {
-    var self = this;
-    var last = this.states.length - 1;
-    global.clearTimeout(this.timer);
-    this.timer = global.setTimeout(function () {
-      if (!self.playing) return;
-      self.go(self.index + 1);
-      if (self.index >= last) {
-        self.pause();
-        return;
-      }
-      self.tick(self.states[self.index].hold || self.config.pace || 2400);
-    }, delay);
   };
 
   ClosingCircle.buildStates = buildStates;
