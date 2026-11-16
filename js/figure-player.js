@@ -127,5 +127,61 @@
     }, delay);
   };
 
+  /* ---- Small helpers the figures share ---- */
+
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+
+  // Make an SVG element, set its attributes, and attach it.
+  FigurePlayer.svg = function (name, attrs, parent) {
+    var node = document.createElementNS(SVG_NS, name);
+    for (var key in attrs) {
+      if (Object.prototype.hasOwnProperty.call(attrs, key)) node.setAttribute(key, attrs[key]);
+    }
+    if (parent) parent.appendChild(node);
+    return node;
+  };
+
+  // True when the reader has asked for less motion.
+  FigurePlayer.calm = function () {
+    return !!(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  };
+
+  // Call frame(p) with p easing from 0 to 1 over ms. Returns a function that stops it.
+  FigurePlayer.tween = function (ms, frame) {
+    var began = null, id = null, stopped = false;
+    if (ms <= 0 || FigurePlayer.calm()) { frame(1); return function () {}; }
+    function step(now) {
+      if (stopped) return;
+      if (began === null) began = now;
+      var p = Math.min(1, (now - began) / ms);
+      frame(p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
+      if (p < 1) id = global.requestAnimationFrame(step);
+    }
+    id = global.requestAnimationFrame(step);
+    return function () { stopped = true; if (id) global.cancelAnimationFrame(id); };
+  };
+
+  // A smooth closed curve through a list of [x, y] points.
+  FigurePlayer.smoothClosed = function (points) {
+    var n = points.length;
+    function f(v) { return v.toFixed(1); }
+    var d = 'M ' + f(points[0][0]) + ' ' + f(points[0][1]);
+    for (var i = 0; i < n; i++) {
+      var p0 = points[(i - 1 + n) % n], p1 = points[i];
+      var p2 = points[(i + 1) % n], p3 = points[(i + 2) % n];
+      d += ' C ' + f(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + f(p1[1] + (p2[1] - p0[1]) / 6) +
+           ', ' + f(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + f(p2[1] - (p3[1] - p1[1]) / 6) +
+           ', ' + f(p2[0]) + ' ' + f(p2[1]);
+    }
+    return d + ' Z';
+  };
+
+  // Repeatable pseudo-random numbers in [0, 1), so a figure looks the same every run.
+  FigurePlayer.dice = function (seed) {
+    var s = seed % 2147483647;
+    if (s <= 0) s += 2147483646;
+    return function () { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+  };
+
   global.FigurePlayer = FigurePlayer;
 })(typeof window !== 'undefined' ? window : this);

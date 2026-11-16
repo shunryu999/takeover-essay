@@ -2,58 +2,83 @@
 
 Working draft of a visual essay on genetic takeover, after A. G. Cairns-Smith.
 
-Nothing here is finished. Each page carries a `noindex` tag; remove it at launch.
+Nothing here is finished. Each page carries a `noindex` tag; remove it at launch. All text on every page is placeholder draft copy.
 
-## What is here
+## Pages
 
-| File | What it is |
-| --- | --- |
-| `a-loop-forms.html` | "A loop forms": a loop emerging from a soup. Not yet placed in the scene order |
-| `index.html` | Scene 10 of Part 1, "The circle closes": an existing loop taken over step by step |
-| `js/figure-player.js` | Controls shared by every figure: play, step, start over, captions, `#step=N` |
-| `js/loop-forms.js` | The loop-forms figure |
-| `js/scene-a-loop-forms.js` | Its content: substances, reactions, the amounts in each state, captions |
-| `js/closing-circle.js` | The closing-circle figure |
-| `js/scene-10.js` | Its content: step labels, takeover order, captions |
-| `css/essay.css` | Type, colour, and how each figure looks in each state |
-| `fonts/` | STIX Two Text, self-hosted under the SIL Open Font License (`fonts/OFL.txt`) |
-
-All text on both pages is placeholder draft copy.
+| Page | Scene | What the figure shows |
+| --- | --- | --- |
+| `index.html` | | Contents: the figures drafted so far, in essay order |
+| `the-arch.html` | Part 1, scenes 2 and 4 | A heap built stone by stone, stones taken away to leave an arch, then a second arch built over the first |
+| `the-rope.html` | Part 1, scene 5 | A rope of overlapping fibres that changes material along its length without breaking |
+| `the-takeover.html` | Part 1, scene 9 | Cairns-Smith's scheme: a second gene begins inside the box of the first and ends up running it |
+| `the-circle-closes.html` | Part 1, scene 10 | An existing loop taken over step by step until the new system makes all its own parts |
+| `a-loop-forms.html` | Not yet placed | A self-feeding loop arising in a mixture. Parked until the autocatalysis reading is done |
 
 ## Run it
 
-Open either HTML file in a browser. There is no build step and nothing to install.
+Open any HTML file in a browser. There is no build step and nothing to install.
 
-Add `#step=N` to the address to open a figure at a given state, for example `a-loop-forms.html#step=5`.
+Add `#step=N` to the address to open a figure at a given state, for example `the-takeover.html#step=4`.
 
-## A loop forms
+## Code
 
-A pool of letters. Each letter is one unit of a substance, so more letters means more of it. Arrows show one substance turning into another.
+| File | What it is |
+| --- | --- |
+| `js/figure-player.js` | Shared by every figure: play, step, start over, captions, `#step=N`, and a few drawing helpers |
+| `js/arch.js`, `js/rope.js`, `js/takeover.js`, `js/closing-circle.js`, `js/loop-forms.js` | One file per figure. The options each accepts are listed at the top of the file |
+| `js/scene-*.js` | One file per page: the content for that figure (states, labels, captions) |
+| `css/essay.css` | Type, colour, and how each figure looks in each state |
+| `fonts/` | STIX Two Text, self-hosted under the SIL Open Font License (`fonts/OFL.txt`) |
+
+No figure knows anything about clay, genes or machines. A scene passes in its content, so Part 2 can reuse the same figures with different content.
+
+A figure element needs a `[data-fig-stage]` child. The caption and the three buttons are optional and are found by their `data-fig-*` attributes. Load `js/figure-player.js` before the figure's own script.
+
+## The figures, state by state
+
+### The arch
 
 | State | What has happened |
 | --- | --- |
-| 0 | A soup with one plentiful ingredient, A |
-| 1 | Some A turns into B and some into C |
-| 2 | B and C build up |
-| 3 | With enough B and C, they react too: D and E from B, F and G from C |
-| 4 | Three more tips at once: H, I and J |
-| 5 | J turns out to make A. The chain A, C, G, J is now a loop, and a runner laps it |
-| 6 | The loop members multiply. The side branches do not |
+| 0 | The arch to be built, in outline |
+| 1 | Built from the feet up, the third stone on each side falls |
+| 2 | A heap instead: every stone rests on something |
+| 3 | A last layer is laid over the heap and meets at the top |
+| 4 | Those outer stones now hold each other |
+| 5 | The heap is taken away. The arch stands |
+| 6 | Pull one stone and the rest come down: no way back |
+| 7 | More stones piled over and around the arch |
+| 8 | A new outer layer meets and holds |
+| 9 | Everything beneath is removed, the first arch included |
 
-This figure is an illustration, not a simulation. The amounts in each state are written in `js/scene-a-loop-forms.js`; nothing is computed from reaction rates.
+### The rope
 
-### Open question: where is this soup?
+| State | What has happened |
+| --- | --- |
+| 0 | From far off: a single thread |
+| 1 | Closer: many overlapping fibres |
+| 2 | Followed along: fibres end and begin, none runs the whole length |
+| 3 | Fibres of a second kind join in |
+| 4 | More of the new kind begin as the old end |
+| 5 | The far end is all new material |
+| 6 | From far off again: one thread, two materials |
 
-Cairns-Smith argued against a loop of this kind starting in an open primordial soup. His first organisms were crystal genes, and the varied chemistry came later, inside them. There are two ways to place this figure:
+### The takeover
 
-- As the general picture of how a loop closes, before any history is told.
-- As what happens inside the first system, whose products are the soup from which the second system's loop forms (*Genetic Takeover*, pp. 122-124, 131).
+Cairns-Smith's stages A to E are noted in `js/scene-the-takeover.js`.
 
-The captions are written so that either reading works.
+| State | His stage | What has happened |
+| --- | --- | --- |
+| 0 | A | A first gene with nothing around it |
+| 1 to 2 | B | A box of useful things builds up, and makes new materials |
+| 3 to 4 | C | One material is copied directly: a second gene, inside the first gene's box. Both shape it |
+| 5 to 6 | D | Corner by corner the box passes to the second genes and changes to suit them |
+| 7 | E | The first genes are gone |
 
-## The circle closes
+### The circle closes
 
-A ring of eight stones. Each stone is one step in making an organism's parts. Supports from an outer frame hold each stone up.
+A ring of eight stones, each one step in making an organism's parts, held up by supports from an outer frame.
 
 | State | What has happened |
 | --- | --- |
@@ -63,25 +88,24 @@ A ring of eight stones. Each stone is one step in making an organism's parts. Su
 | 9 | The last step changes hands. The circle is closed and a runner laps the loop |
 | 10 | The supports fall away |
 
-The closure meter under the figure counts the steps the second system runs.
+### A loop forms
 
-## Reusing the figures
+A pool of letters, where more letters means more of a substance. A makes B and C; they build up and make D to G; branching continues; J turns out to make A, and the chain A, C, G, J becomes a loop whose members multiply.
 
-Neither figure knows anything about clay, genes or machines. A scene passes in its content as a config, so Part 2 can reuse both with different content. The options for each are listed at the top of `js/loop-forms.js` and `js/closing-circle.js`.
-
-A figure element needs a `[data-fig-stage]` child. The caption and the three buttons are optional and are found by their `data-fig-*` attributes; see either HTML file. Load `js/figure-player.js` before the figure's own script.
+This one is an illustration, not a simulation: the amounts are written in `js/scene-a-loop-forms.js`. It also sits outside Cairns-Smith's account. He treats a loop that merely reproduces as unable to evolve, because a changed version is not copied (*Genetic Takeover*, pp. 71-74). How it relates to the rest is still to be worked out.
 
 ## Colour
 
 Two colours carry the argument, and Part 2 should reuse them unchanged.
 
-- Mineral, `#cad5d6` with `#6f858c` lines: the first system, and anything not part of a loop
-- Carbon, `#17212a`: the second system, and the loop
-- Signal, `#f0b429`: used once per figure, for the runner when a loop closes
+- Mineral, `#cad5d6` with `#6f858c` lines: the first system, and anything held up by something else
+- Carbon, `#17212a`: the second system, and anything that holds itself up
+- Signal, `#f0b429`: used once per figure at most, for the runner when a loop closes
 
 ## Sources
 
-- A. G. Cairns-Smith, *Genetic Takeover and the Mineral Origins of Life* (Cambridge University Press, 1982), pp. 122-124, 131, 410-411 and 414.
+- A. G. Cairns-Smith, *Genetic Takeover and the Mineral Origins of Life* (Cambridge University Press, 1982): pp. 5, 71-74, 95-99 (figures 3.3 and 3.4), 105-106, 120-124 (figure 4.1), 410-411, 414.
+- A. G. Cairns-Smith, *Seven Clues to the Origin of Life* (Cambridge University Press, 1985): pp. 59-62, 107-112.
 - S. A. Kauffman, "Autocatalytic sets of proteins", *Journal of Theoretical Biology* 119 (1986), 1-24.
 
-The scene list and page references for the rest of Part 1 are in the outline doc, "Genetic Takeover: Part 1 outline".
+The figures are redrawn, not reproduced. The scene list and page references for the rest of Part 1 are in the outline doc, "Genetic Takeover: Part 1 outline".
