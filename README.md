@@ -109,3 +109,15 @@ Two colours carry the argument, and Part 2 should reuse them unchanged.
 - S. A. Kauffman, "Autocatalytic sets of proteins", *Journal of Theoretical Biology* 119 (1986), 1-24.
 
 The figures are redrawn, not reproduced. The scene list and page references for the rest of Part 1 are in the outline doc, "Genetic Takeover: Part 1 outline".
+
+## Replicator figures (not yet placed)
+
+Three figures drawn from Freitas and Merkle, *Kinematic Self-Replicating Machines* (2004). They sit between Part 1 and the machine part of the essay.
+
+| Page | Code | What it shows | Source sections |
+| --- | --- | --- | --- |
+| `the-race.html` | `js/race.js`, `js/scene-the-race.js` | Five lineages on one clock, differing in copy time, copies per round, lifespan and accuracy; a bar shows each one's share of the true copies | 5.1.1, 5.1.9 (J1, J2, L4), 5.9.1 |
+| `the-edge.html` | `js/spread.js`, `js/scene-the-edge.js` | Copiers filling a surface of fixed size: multiplying, then growing only at the edge, then full | 5.9.3 |
+| `three-closures.html` | `js/closure.js`, `js/scene-three-closures.js` | Parts, power and instructions supplied from outside or by the machine itself; an open line that is cut stops copying | 5.6, 5.1.9 (A1, E4, J5) |
+
+The race and the edge are worked out from their settings when the page loads (`seed` fixes the random choices), so changing a lineage's numbers or the size of the surface changes the figure. Captions that quote counts must be checked after any such change.
