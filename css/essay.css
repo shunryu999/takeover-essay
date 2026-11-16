@@ -22,6 +22,7 @@
   --carbon: #17212a;
   --mineral: #cad5d6;
   --mineral-line: #6f858c;
+  --soup: #e8eeee;
   --signal: #f0b429;
   --quiet: #55626a;
   --serif: "STIX Two Text", "STIXGeneral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
@@ -54,6 +55,9 @@ body {
   font-size: 0.875rem;
   color: var(--quiet);
 }
+.draft-note a { color: inherit; text-underline-offset: 0.2em; }
+.draft-note a:hover { color: var(--carbon); }
+.draft-note a:focus-visible { outline: 2px solid var(--carbon); outline-offset: 3px; }
 
 h1 {
   margin: 0 0 1.25rem;
@@ -143,7 +147,7 @@ h1 {
   font-variant-numeric: lining-nums;
   cursor: pointer;
 }
-.plate__controls button[data-cc-play] {
+.plate__controls button[data-fig-play] {
   min-width: 7.5rem;
   background: var(--carbon);
   color: var(--paper);
@@ -286,13 +290,177 @@ h1 {
 /* Once the supports are down, the runner rests at the top of the loop. */
 .cc[data-dropped="true"] .cc-runner { animation: none; }
 
+/* ---------- Loop forms (SVG) ---------- */
+
+.lf { display: block; width: 100%; height: auto; }
+
+.lf-pool {
+  fill: var(--soup);
+  stroke: var(--mineral-line);
+  stroke-width: 1.5;
+}
+
+/* Each letter is one unit of a substance. */
+.lf-glyph {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  fill: var(--carbon);
+  text-anchor: middle;
+  dominant-baseline: central;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.35) rotate(var(--tilt, 0deg));
+  transition: opacity 0.45s ease var(--delay, 0s),
+              transform 0.6s cubic-bezier(0.3, 0.7, 0.2, 1) var(--delay, 0s),
+              fill 0.7s ease;
+}
+.lf-glyph[data-on="true"] {
+  opacity: 1;
+  transform: rotate(var(--tilt, 0deg));
+}
+.lf-species[data-dim="true"] .lf-glyph { fill: var(--mineral-line); }
+
+/* One substance turning into another. */
+.lf-rx { opacity: 0; transition: opacity 0.6s ease; }
+.lf-rx[data-state="on"],
+.lf-rx[data-state="loop"] { opacity: 1; }
+.lf[data-closed="true"] .lf-rx[data-state="on"] { opacity: 0.55; }
+
+.lf-rx-line,
+.lf-rx-head {
+  fill: none;
+  stroke: var(--mineral-line);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.5s ease, stroke-width 0.5s ease;
+}
+.lf-rx[data-state="loop"] .lf-rx-line,
+.lf-rx[data-state="loop"] .lf-rx-head {
+  stroke: var(--carbon);
+  stroke-width: 3;
+}
+
+/* Dots travelling along a reaction, in its direction. They run for a few
+   seconds after each new state and then rest. */
+.lf-rx-flow {
+  fill: none;
+  stroke: var(--carbon);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 14;
+  opacity: 0;
+}
+.lf-rx[data-state="on"] .lf-rx-flow { opacity: 0.6; }
+.lf-rx[data-state="loop"] .lf-rx-flow { stroke: var(--paper); stroke-width: 1.75; opacity: 1; }
+.lf[data-beat="0"] .lf-rx:not([data-state="off"]) .lf-rx-flow { animation: lf-flow-a 1.4s linear 5; }
+.lf[data-beat="1"] .lf-rx:not([data-state="off"]) .lf-rx-flow { animation: lf-flow-b 1.4s linear 5; }
+.lf .lf-rx[data-state="loop"] .lf-rx-flow { animation-duration: 0.9s; animation-iteration-count: 8; }
+@keyframes lf-flow-a { from { stroke-dashoffset: 14.1; } to { stroke-dashoffset: 0; } }
+@keyframes lf-flow-b { from { stroke-dashoffset: 14.1; } to { stroke-dashoffset: 0; } }
+
+.lf-runner {
+  fill: var(--signal);
+  stroke: var(--carbon);
+  stroke-width: 1.5;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+/* The runner shows only while it laps the new loop. */
+.lf[data-running="true"] .lf-runner { opacity: 1; }
+
+/* ---------- The arch (SVG) ---------- */
+
+.arch { display: block; width: 100%; height: auto; }
+.arch-ground { stroke: var(--mineral-line); stroke-width: 2; stroke-linecap: round; }
+
+.arch-stone {
+  fill: var(--mineral);
+  stroke: var(--mineral-line);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.3, 0.7, 0.2, 1) var(--delay, 0s),
+              opacity 0.3s ease var(--delay, 0s),
+              fill 0.6s ease, stroke 0.6s ease;
+}
+.arch-stone[data-here="no"] { opacity: 0; transform: translateY(-44px); }
+.arch-stone[data-here="gone"] { opacity: 0; transform: translateY(12px) scale(0.6); }
+/* A stone that now holds, and is held by, its neighbours. */
+.arch-stone[data-locked="true"] { fill: var(--carbon); stroke: var(--paper); }
+/* One stone pulled out, and the stones above it starting to drop. */
+.arch-stone[data-here="tug"] {
+  transform: translate(var(--ux, 0px), var(--uy, 0px));
+  fill: var(--paper);
+  stroke: var(--carbon);
+  stroke-dasharray: 4 4;
+}
+.arch-stone[data-sag="true"] { transform: translate(5px, 17px) rotate(16deg); }
+
+.arch-ghost {
+  fill: none;
+  stroke: var(--mineral-line);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 4;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.arch[data-ghost="true"] .arch-ghost { opacity: 1; }
+
+/* ---------- The rope (SVG) ---------- */
+
+.rope { display: block; width: 100%; height: auto; }
+.rope-casing,
+.rope-thread { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.rope-casing { stroke: var(--paper); stroke-width: 10.5; }
+.rope-thread { stroke-width: 6.5; }
+.rope-thread[data-kind="1"] { stroke: var(--mineral-line); }
+.rope-thread[data-kind="2"] { stroke: var(--carbon); }
+.rope-axis { fill: none; stroke: var(--mineral-line); stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- The takeover (SVG) ---------- */
+
+.tk { display: block; width: 100%; height: auto; }
+.tk-box { fill: var(--soup); }
+.tk-edge { stroke-linecap: round; transition: stroke 0.6s ease, stroke-width 0.6s ease; }
+.tk-edge[data-by="0"] { stroke: var(--mineral-line); stroke-width: 1.5; stroke-dasharray: 2 6; }
+.tk-edge[data-by="1"] { stroke: var(--mineral-line); stroke-width: 2.5; }
+.tk-edge[data-by="2"] { stroke: var(--carbon); stroke-width: 4; }
+.tk-arrow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.tk-arrow[data-on="true"] { opacity: 1; }
+.tk-arrow[data-gene="1"] { stroke: var(--mineral-line); stroke-width: 1.5; }
+.tk-arrow[data-gene="2"] { stroke: var(--carbon); stroke-width: 2.25; }
+.tk-plate { fill: var(--mineral); stroke: var(--mineral-line); stroke-width: 1.5; stroke-linejoin: round; }
+.tk-link { fill: none; stroke: var(--mineral-line); stroke-width: 2; transition: stroke 0.6s ease; }
+.tk-bead { fill: var(--paper); stroke: var(--mineral-line); stroke-width: 1.5; transition: fill 0.6s ease, stroke 0.6s ease; }
+.tk-chain[data-gene="true"] .tk-link { stroke: var(--carbon); }
+.tk-chain[data-gene="true"] .tk-bead { fill: var(--carbon); stroke: var(--carbon); }
+
+/* ---------- Contents page ---------- */
+
+.contents { max-width: var(--measure); margin: 0; padding: 0; list-style: none; }
+.contents li { padding: 1.1rem 0; border-top: 1px solid var(--mineral); }
+.contents a { font-size: 1.5rem; color: var(--carbon); text-underline-offset: 0.18em; }
+.contents a:focus-visible { outline: 2px solid var(--carbon); outline-offset: 3px; }
+.contents__where { margin-left: 0.75rem; font-size: 0.875rem; color: var(--quiet); white-space: nowrap; }
+.contents p { margin: 0.25rem 0 0; color: var(--quiet); }
+
 /* Jump between states without animating (start over, deep links). */
-.is-snapping .cc *,
+.is-snapping svg *,
 .is-snapping .meter__cell { transition: none !important; animation: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .cc *, .meter__cell { transition: none !important; }
+  .cc *, .lf *, .arch *, .tk *, .meter__cell { transition: none !important; }
   .cc[data-closed="true"] .cc-runner { animation: none; }
   .cc[data-dropped="true"] .cc-support,
   .cc[data-dropped="true"] .cc-beam { transform: none; }
+  .lf .lf-rx .lf-rx-flow { animation: none !important; }
 }
