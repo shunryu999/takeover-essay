@@ -444,6 +444,55 @@ h1 {
 .tk-chain[data-gene="true"] .tk-link { stroke: var(--carbon); }
 .tk-chain[data-gene="true"] .tk-bead { fill: var(--carbon); stroke: var(--carbon); }
 
+/* ---------- The race (SVG) ---------- */
+
+.race { display: block; width: 100%; height: auto; }
+.race text { font-family: var(--serif); fill: var(--carbon); }
+.race-name { font-size: 22px; font-style: italic; }
+.race-total { font-size: 19px; }
+.race-clock { font-size: 18px; fill: var(--quiet) !important; }
+.race-dot { fill: var(--carbon); stroke: var(--carbon); stroke-width: 1.25; opacity: 0; transition: opacity 0.7s ease; }
+.race-dot[data-on="true"] { opacity: 1; }
+.race-dot[data-true="false"] { fill: var(--paper); stroke: var(--mineral-line); }
+.race-share { fill: var(--carbon); transition: x 0.9s ease, width 0.9s ease; }
+.race-share-name { font-size: 16px; font-style: italic; }
+
+/* ---------- The edge (SVG) ---------- */
+
+.spread { display: block; width: 100%; height: auto; }
+.spread text { font-family: var(--serif); }
+.spread-ground { fill: var(--soup); }
+.spread-cell { fill: none; }
+.spread-cell[data-is="edge"] { fill: var(--carbon); }
+.spread-cell[data-is="inside"] { fill: var(--mineral-line); }
+.spread-axis { fill: none; stroke: var(--mineral-line); stroke-width: 1.25; }
+.spread-ceiling { fill: none; stroke: var(--mineral-line); stroke-width: 1.25; stroke-dasharray: 2 5; stroke-linecap: round; }
+.spread-curve { fill: none; stroke: var(--carbon); stroke-width: 2.25; stroke-linejoin: round; stroke-linecap: round; }
+.spread-marker { fill: var(--carbon); }
+.spread-note { font-size: 17px; fill: var(--quiet); }
+
+/* ---------- Three closures (SVG) ---------- */
+
+.clo { display: block; width: 100%; height: auto; }
+.clo text { font-family: var(--serif); }
+.clo-head, .clo-note { font-size: 17px; fill: var(--quiet); }
+.clo-box { fill: none; stroke: var(--carbon); stroke-width: 1.75; }
+.clo-supplier { transition: opacity 0.6s ease; }
+.clo-supplier rect { fill: var(--mineral); stroke: var(--mineral-line); stroke-width: 1.5; }
+.clo-supplier text { font-size: 19px; fill: var(--carbon); }
+.clo-line { fill: none; stroke: var(--mineral-line); transition: opacity 0.6s ease; }
+.clo-line[data-cut="true"] { stroke-dasharray: 34 30 400; }
+.clo-snip { fill: none; stroke: var(--carbon); stroke-width: 2.25; stroke-linecap: round; opacity: 0; transition: opacity 0.4s ease; }
+.clo-snip[data-cut="true"] { opacity: 1; }
+.clo-bar { fill: var(--mineral); }
+.clo-own { fill: var(--carbon); }
+.clo-make, .clo-raw { fill: none; stroke: var(--mineral-line); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.clo-make { stroke: var(--carbon); transition: opacity 0.6s ease; }
+.clo-copy { transition: opacity 0.6s ease; }
+.clo[data-copies="false"] .clo-copy { opacity: 0.22; }
+.clo[data-copies="false"] .clo-copy .clo-box { stroke-dasharray: 5 5; }
+.clo[data-copies="false"] .clo-make { opacity: 0.22; }
+
 /* ---------- Contents page ---------- */
 
 .contents { max-width: var(--measure); margin: 0; padding: 0; list-style: none; }
@@ -458,7 +507,7 @@ h1 {
 .is-snapping .meter__cell { transition: none !important; animation: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .cc *, .lf *, .arch *, .tk *, .meter__cell { transition: none !important; }
+  .cc *, .lf *, .arch *, .tk *, .race *, .clo *, .meter__cell { transition: none !important; }
   .cc[data-closed="true"] .cc-runner { animation: none; }
   .cc[data-dropped="true"] .cc-support,
   .cc[data-dropped="true"] .cc-beam { transform: none; }

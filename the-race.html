@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>The race: Takeover, working draft</title>
+  <link rel="stylesheet" href="css/essay.css">
+</head>
+<body>
+  <main class="page">
+
+    <p class="draft-note"><a href="index.html">Takeover</a>, a working draft. Replicators, not yet placed.</p>
+
+    <h1>The race</h1>
+
+    <p class="claim">Four numbers decide which copier comes to fill the room: how fast, how many, how long, and how true.</p>
+
+    <figure class="plate" id="the-race">
+      <div class="plate__stage" data-fig-stage>
+        <p>This figure is an animation and needs JavaScript to run.</p>
+      </div>
+
+      <figcaption class="plate__caption" data-fig-caption aria-live="polite"></figcaption>
+
+      <div class="plate__controls">
+        <button type="button" data-fig-play>Play</button>
+        <button type="button" data-fig-next>Next step</button>
+        <button type="button" data-fig-reset>Start over</button>
+      </div>
+
+      <ul class="plate__key">
+        <li>
+          <svg viewBox="0 0 28 16" aria-hidden="true"><circle cx="14" cy="8" r="5" fill="#17212a" stroke="#17212a" stroke-width="1.5"/></svg>
+          A unit true to its type
+        </li>
+        <li>
+          <svg viewBox="0 0 28 16" aria-hidden="true"><circle cx="14" cy="8" r="5" fill="#f6f7f4" stroke="#6f858c" stroke-width="1.5"/></svg>
+          A copy that came out wrong
+        </li>
+        <li>
+          <svg viewBox="0 0 28 16" aria-hidden="true"><path d="M3 8h22" stroke="#17212a" stroke-width="6" stroke-linecap="round"/></svg>
+          The bar: each lineage&rsquo;s share of the true copies
+        </li>
+      </ul>
+    </figure>
+
+    <div class="prose">
+      <p>A is the reference: one copy every two ticks, each copy exact, and no unit ever fails. B takes one tick. C makes two copies at a time. D&rsquo;s units fail after copying twice. Half of E&rsquo;s copies come out wrong.</p>
+
+      <p>None of the five is better built than the others in any other sense. The figure changes one number per lineage and lets the clock run. What a lineage is made of does not enter into it.</p>
+
+      <p>Engineers who design copying machines treat these as dials to be set. For anything that copies without a designer, they are what selection acts on.</p>
+    </div>
+
+    <div class="sources">
+      <p>After Robert A. Freitas Jr. and Ralph C. Merkle, <i>Kinematic Self-Replicating Machines</i> (Landes Bioscience, 2004), sections 5.1.1 (fecundity, fidelity and longevity, from Dawkins), 5.1.9 J1, J2 and L4, and 5.9.1.</p>
+      <p>The text on this page is placeholder draft copy.</p>
+    </div>
+
+  </main>
+
+  <script src="js/figure-player.js"></script>
+  <script src="js/race.js"></script>
+  <script src="js/scene-the-race.js"></script>
+</body>
+</html>
